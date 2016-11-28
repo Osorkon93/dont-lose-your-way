@@ -3,7 +3,9 @@ package app;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.prefs.BackingStoreException;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 //import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -20,7 +22,7 @@ public class MainController implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		System.out.println("controller loaded");
+//		System.out.println("controller loaded");
 	}
 	
 	@FXML Button go;
@@ -29,7 +31,7 @@ public class MainController implements Initializable{
 	
 	@FXML
 	public void pressedGo(ActionEvent e){
-		System.out.println("pressedGo");
+//		System.out.println("pressedGo");
 		
 		String from = fromField.getText();
 		String to = toField.getText();
@@ -44,9 +46,13 @@ public class MainController implements Initializable{
 	}
 	
 	@FXML
-	public void quit(ActionEvent e){
-		
-		
+	public void quit(ActionEvent e) throws BackingStoreException{
+		// if 'remember' parameter true save last search
+		if(Storage.remember == true){
+			//save
+		}
+		Storage.setPreferences();
+		Platform.exit();
 	}
 	
 	@FXML
@@ -56,15 +62,21 @@ public class MainController implements Initializable{
 	}
 	
 	@FXML
-	public void switchTheme(ActionEvent e){
-
-		
+	public void switchTheme(ActionEvent e) throws BackingStoreException{
+		if(Storage.theme.equals("application.css")){
+			Storage.theme = "dark.css";
+		}
+		else if(Storage.theme.equals("dark.css")){
+			Storage.theme = "application.css";
+		}
+		Storage.setPreferences();
+		System.out.println(Storage.theme);
 	}
 	
 	@FXML
-	public void remember(ActionEvent e){
-
-		
+	public void remember(ActionEvent e) throws BackingStoreException{
+		Storage.remember = Storage.remember ? false : true;
+		Storage.setPreferences();
 	}
 	
 	@FXML
@@ -73,14 +85,16 @@ public class MainController implements Initializable{
 		try{
 			root = FXMLLoader.load(getClass().getResource("Documentation.fxml"));
 			Stage stage = new Stage();
-//			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			stage.setTitle("Documentation");
-			stage.setScene(new Scene(root));
+			
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource(Storage.theme).toExternalForm());
+			
+			stage.setScene(scene);
 			stage.show();
 		}catch(IOException ex) {
             ex.printStackTrace();
 		}
-		
 	}
 	
 	@FXML
@@ -89,9 +103,12 @@ public class MainController implements Initializable{
 		try{
 			root = FXMLLoader.load(getClass().getResource("About.fxml"));
 			Stage stage = new Stage();
-//			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			stage.setTitle("About");
-			stage.setScene(new Scene(root));
+			
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add(getClass().getResource(Storage.theme).toExternalForm());
+			
+			stage.setScene(scene);
 			stage.show();
 		}catch(IOException ex) {
             ex.printStackTrace();
