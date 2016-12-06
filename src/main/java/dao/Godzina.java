@@ -1,7 +1,7 @@
 package dao;
 
 import java.util.regex.PatternSyntaxException;
-
+import Core.Exceptions.GodzinaFormatException;
 
 public class Godzina {
 	
@@ -9,7 +9,7 @@ public class Godzina {
 	private int minuta;
 	private String nazwa;
 	
-	public Godzina(String temp)throws GodzinaFormatException{
+	public Godzina(String temp)throws GodzinaFormatException {
 		try{
 			nazwa = temp;
 			String[] tempTablica = temp.split(":");

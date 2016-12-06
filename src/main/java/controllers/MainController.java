@@ -1,6 +1,7 @@
 package controllers;
 
 
+import Core.wyszukiwarka.Wyszukiwarka;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,6 +16,8 @@ import Core.Storage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 import java.util.prefs.BackingStoreException;
 
@@ -25,7 +28,6 @@ public class MainController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-//		System.out.println("controller loaded");
     }
 
     @FXML Button go;
@@ -34,7 +36,6 @@ public class MainController implements Initializable{
 
     @FXML
     public void pressedGo(ActionEvent e){
-//		System.out.println("pressedGo");
 
         String from = fromField.getText();
         String to = toField.getText();
@@ -44,16 +45,13 @@ public class MainController implements Initializable{
 
         //TODO: parse input
 
-
-
+        // defaults to now
+        String timeStamp = new SimpleDateFormat(/*"yyyyMMdd_HHmmss"*/ "HH:mm").format(Calendar.getInstance().getTime());
+        Wyszukiwarka.main(new String []{from, to, timeStamp, "15"});
     }
 
     @FXML
     public void quit(ActionEvent e) throws BackingStoreException{
-        // if 'remember' parameter true save last search
-        if(Storage.remember == true){
-            //save
-        }
         Storage.setPreferences();
         Platform.exit();
     }
@@ -67,9 +65,9 @@ public class MainController implements Initializable{
     @FXML
     public void switchTheme(ActionEvent e) throws BackingStoreException{
         if(Storage.theme.equals("view/application.css")){
-            Storage.theme = "dark.css";
+            Storage.theme = "view/dark.css";
         }
-        else if(Storage.theme.equals("dark.css")){
+        else if(Storage.theme.equals("view/dark.css")){
             Storage.theme = "view/application.css";
         }
         Storage.setPreferences();
@@ -78,7 +76,7 @@ public class MainController implements Initializable{
 
     @FXML
     public void remember(ActionEvent e) throws BackingStoreException{
-        Storage.remember = Storage.remember ? false : true;
+        Storage.remember = !Storage.remember;
         Storage.setPreferences();
     }
 
@@ -86,7 +84,7 @@ public class MainController implements Initializable{
     public void showDocumentation(ActionEvent e){
         Parent root;
         try{
-            root = FXMLLoader.load(getClass().getResource("Documentation.fxml"));
+            root = FXMLLoader.load(getClass().getResource("view/Documentation.fxml"));
             Stage stage = new Stage();
             stage.setTitle("Documentation");
 

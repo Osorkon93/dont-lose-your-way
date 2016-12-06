@@ -1,6 +1,7 @@
 package Core.wyszukiwarka;
 
-import Core.Expections.*;
+import Core.Exceptions.*;
+import Core.Storage;
 import Core.comparators.CzasComparator;
 import Core.comparators.WygodaComparator;
 import dao.*;
@@ -28,13 +29,15 @@ public class Wyszukiwarka implements WyszukiwarkaPolaczen {
 	public static void main(String args[]){
 		try{
 			String wynik;
-			Scanner wejscie = new Scanner(System.in);
+//			Scanner wejscie = new Scanner(System.in);
 
-			if(!wejscie.hasNextLine())throw new BrakDanychException();
-			String liniaWejscia = wejscie.nextLine();
-			wejscie.close();
+//			if(!wejscie.hasNextLine())throw new BrakDanychException();
+//			String liniaWejscia = wejscie.nextLine();
+//			wejscie.close();
 
-			String daneWejscia[] = liniaWejscia.split(" ");
+//			String daneWejscia[] = liniaWejscia.split(" ");
+
+            String daneWejscia[] = args;
 			int index = 0;
 
 			Wyszukiwarka w = new Wyszukiwarka();
@@ -66,7 +69,13 @@ public class Wyszukiwarka implements WyszukiwarkaPolaczen {
 			index++;
 			if(index < daneWejscia.length)throw new ZbedneDaneNaKoncuException(index, daneWejscia);
 
-			if(porzadek.equals("s")){
+			//
+            Storage.loadPreferences(); //na wszelki wypadek
+            String porzadek = Storage.porzadek;
+            String tryb = Storage.tryb;
+            //
+
+			if(porzadek.equals("szybki")){
 				if(tryb.equals("w"))wynik = w.znajdzOdNajkrotszego(przystanekPoczatkowy, przystanekDocelowy, czasPoczatkowy, dlugosc);
 				else wynik = w.znajdzNajkrotsze(przystanekPoczatkowy, przystanekDocelowy, czasPoczatkowy, dlugosc);
 			}
@@ -77,75 +86,76 @@ public class Wyszukiwarka implements WyszukiwarkaPolaczen {
 			System.out.print(wynik);
 		}catch(ZbedneDaneNaKoncuException w){
 			System.out.println("Na końcu wiersza wejścia występują zbędne dane! Usuń fragment: "+w.getZbedne());
-		}catch(NiepoprawneDaneWejsciaException w){
-			System.out.println("Dane wejscia niezgodne ze specyfikacją! Nierozpoznano fragmentu: "+w.getString());
+//		}catch(NiepoprawneDaneWejsciaException w){
+//			System.out.println("Dane wejscia niezgodne ze specyfikacją! Nierozpoznano fragmentu: "+w.getString());
 		}catch(PatternSyntaxException w){
 			System.out.println("Dane wejscia niezgodne ze specyfikacją!");
 		}catch(GodzinaFormatException w){
 			System.out.println("Niepoprawny format godziny! Postać "+w.getGodzina()+" jest niedopuszczalna!");
 		}catch(BrakDanychException w){
 			System.out.println("Nie wprowadzono wszystkich danych!");
-		}catch(FileNotFoundException w){
-			System.out.println("Plik pod wskazanym adresem nie istnieje! Wskazana ścieżka to: "+w.getLocalizedMessage());
-		}catch(NiepoprawnyRozkladException w){
-			System.out.println("Plik zawiera nieprawidłowy format danych! Nieprawidłowy rozkład linii "+w.getLinia()+" na trasie "+w.getNumerTrasy()+". w wierszu "+w.getNumerKursu());
-		}catch(BrakDanychWPlikuException w){
-			System.out.println("Plik zawiera niekompletne dane!");
-		}catch(TaSamaLiniaException w){
-			System.out.println("Plik wejściowy zawiera niepoprawne dane! Dane o linii "+w.getLinia()+ " występują w pliku więcej niż raz w pliku wejściowym!");
-		}catch(TenSamPrzystanekException w){
-			System.out.println("Plik wejściowy zawiera niepoprawne dane! Przystanek o nazwie "+w.getPrzystanek()+" występuje więcej niż raz w bazie przystanków!");
-		}catch(PrzystanekNotExistException w){
-			System.out.println("Przystanek "+w.getPrzystanek()+", podany w pliku wejściowym jako jeden z przystanków linii "+w.getLinia()+", nie istnieje w bazie!");
+//		}catch(FileNotFoundException w){
+//			System.out.println("Plik pod wskazanym adresem nie istnieje! Wskazana ścieżka to: "+w.getLocalizedMessage());
+//		}catch(NiepoprawnyRozkladException w){
+//			System.out.println("Plik zawiera nieprawidłowy format danych! Nieprawidłowy rozkład linii "+w.getLinia()+" na trasie "+w.getNumerTrasy()+". w wierszu "+w.getNumerKursu());
+//		}catch(BrakDanychWPlikuException w){
+//			System.out.println("Plik zawiera niekompletne dane!");
+//		}catch(TaSamaLiniaException w){
+//			System.out.println("Plik wejściowy zawiera niepoprawne dane! Dane o linii "+w.getLinia()+ " występują w pliku więcej niż raz w pliku wejściowym!");
+//		}catch(TenSamPrzystanekException w){
+//			System.out.println("Plik wejściowy zawiera niepoprawne dane! Przystanek o nazwie "+w.getPrzystanek()+" występuje więcej niż raz w bazie przystanków!");
+//		}catch(PrzystanekNotExistException w){
+//			System.out.println("Przystanek "+w.getPrzystanek()+", podany w pliku wejściowym jako jeden z przystanków linii "+w.getLinia()+", nie istnieje w bazie!");
 		}catch(PrzystanekNotFoundException w){
 			System.out.println("Podany na wejściu przystanek ("+w.getPrzystanek()+") nie istnieje w bazie!");
 		}
 	}
 
 	public void wczytajBaze() {
-//szkic metody
-		//pętla po wszystkich przystankach
-		String nazwa;
-		Przystanek tempPrzystanek = new Przystanek(nazwa);	// FIXME: 06.12.2016
-		przystanki.put(nazwa, tempPrzystanek);
-
-		//petla po wszystkich liniach
-			String nazwaLinii;
-			Linia tempLinia = new Linia(nazwaLinii);    // FIXME: 06.12.2016
-			linie.put(nazwaLinii, tempLinia);
-			List<Trasa> tempTrasy = new LinkedList<Trasa>();
-			String tempLine = null;
-
-				//dla danej linii
-					List<Przystanek> tempPrzystanki = new ArrayList<Przystanek>();
-							//pętla po przystankach
-							String temp;
-							tempPrzystanki.add(przystanki.get(temp));
-
-					Trasa tempTrasa = new Trasa(tempPrzystanki);
-					tempTrasy.add(tempTrasa);
-					trasy.add(tempTrasa);
-
-
-
-
-					for(int j=0; j<2; j++){		//// FIXME: 06.12.2016 dodałem bez sensu tego for'a tylko po to aby zgadzaly sie nawiasy
-
-					//pętla
-						Kurs tempKurs = new Kurs(tempLinia, aktTrasa);    // FIXME: 06.12.2016
-						kursy.add(tempKurs);
-						List<Odjazd> tempOdjazdy = new ArrayList<Odjazd>();
-
-						String temp;
-							Godzina tempGodzina = new Godzina(temp);    // FIXME: 06.12.2016
-							Odjazd tempOdjazd = new Odjazd(tempKurs, j, tempGodzina);
-							tempOdjazdy.add(tempOdjazd);
-							Przystanek aktPrzystanek = null;
-							if(aktTrasa != null)aktPrzystanek = aktTrasa.getPrzystanek(j);
-							if(aktPrzystanek != null)aktPrzystanek.dodajOdjazd(tempOdjazd);
-							j++;
-						}
-						tempKurs.dodajOdjazdy(tempOdjazdy);
+////szkic metody
+//		//pętla po wszystkich przystankach
+//		String nazwa;
+//
+//		Przystanek tempPrzystanek = new Przystanek(nazwa);	// FIXME: 06.12.2016
+//		przystanki.put(nazwa, tempPrzystanek);
+//
+//		//petla po wszystkich liniach
+//			String nazwaLinii;
+//			Linia tempLinia = new Linia(nazwaLinii);    // FIXME: 06.12.2016
+//			linie.put(nazwaLinii, tempLinia);
+//			List<Trasa> tempTrasy = new LinkedList<Trasa>();
+//			String tempLine = null;
+//
+//				//dla danej linii
+//					List<Przystanek> tempPrzystanki = new ArrayList<Przystanek>();
+//							//pętla po przystankach
+//							String temp;
+//							tempPrzystanki.add(przystanki.get(temp));
+//
+//					Trasa tempTrasa = new Trasa(tempPrzystanki);
+//					tempTrasy.add(tempTrasa);
+//					trasy.add(tempTrasa);
+//
+//
+//
+//
+//					for(int j=0; j<2; j++){		//// FIXME: 06.12.2016 dodałem bez sensu tego for'a tylko po to aby zgadzaly sie nawiasy
+//
+//					//pętla
+//						Kurs tempKurs = new Kurs(tempLinia, aktTrasa);    // FIXME: 06.12.2016
+//						kursy.add(tempKurs);
+//						List<Odjazd> tempOdjazdy = new ArrayList<Odjazd>();
+//
+//						String temp;
+//							Godzina tempGodzina = new Godzina(temp);    // FIXME: 06.12.2016
+//							Odjazd tempOdjazd = new Odjazd(tempKurs, j, tempGodzina);
+//							tempOdjazdy.add(tempOdjazd);
+//							Przystanek aktPrzystanek = null;
+//							if(aktTrasa != null)aktPrzystanek = aktTrasa.getPrzystanek(j);
+//							if(aktPrzystanek != null)aktPrzystanek.dodajOdjazd(tempOdjazd);
+//							j++;
+//						}
+//						tempKurs.dodajOdjazdy(tempOdjazdy);
 
 	}
 

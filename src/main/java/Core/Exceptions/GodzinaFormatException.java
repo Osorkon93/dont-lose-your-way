@@ -1,9 +1,9 @@
-package Core.Expections;
+package Core.Exceptions;
 
 import java.io.IOException;
 
 
-public class GodzinaFormatException extends IOException {
+public class GodzinaFormatException extends IOException{
 	
 	private String nazwaGodziny;
 	

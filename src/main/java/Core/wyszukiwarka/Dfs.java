@@ -1,6 +1,6 @@
 package Core.wyszukiwarka;
 
-import Core.Expections.GodzinaFormatException;
+import Core.Exceptions.GodzinaFormatException;
 import dao.Godzina;
 import dao.Linia;
 import dao.Odjazd;
@@ -70,22 +70,22 @@ public class Dfs {
 					dfs(tempElt);
 				}
 			}
-			List<Przystanek> tempPrzystanki = akt.getPrzystanek().getZespol().getPrzystanki();
-			Iterator<Przystanek> it2 = tempPrzystanki.iterator();
-			while(it2.hasNext()){
-				Przystanek tempPrzystanek = it2.next();
-				if(!this.czyWystepujePrzystanek(tempPrzystanek)){
-					List<Odjazd> y = tempPrzystanek.getOdjazdy();
-					Iterator<Odjazd> it3 = y.iterator();
-					while(it3.hasNext()){
-						Odjazd tempOdjazd = it3.next();
-						if(tempOdjazd.getCzas().czyNieMniejszy5(akt.getCzas()) && !this.czyWystepujeLinia(tempOdjazd.getKurs().getLinia())){
-							ElementStosu tempElt = new ElementStosu(tempOdjazd.getCzas(), tempPrzystanek, tempOdjazd.getKurs().getLinia(), tempOdjazd, tempOdjazd.czyDojezdzaDoCelu(), false);
-							dfs(tempElt);
-						}
-					}
-				}
-			}
+//			List<Przystanek> tempPrzystanki = akt.getPrzystanek().getZespol().getPrzystanki();
+//			Iterator<Przystanek> it2 = tempPrzystanki.iterator();
+//			while(it2.hasNext()){
+//				Przystanek tempPrzystanek = it2.next();
+//				if(!this.czyWystepujePrzystanek(tempPrzystanek)){
+//					List<Odjazd> y = tempPrzystanek.getOdjazdy();
+//					Iterator<Odjazd> it3 = y.iterator();
+//					while(it3.hasNext()){
+//						Odjazd tempOdjazd = it3.next();
+//						if(tempOdjazd.getCzas().czyNieMniejszy5(akt.getCzas()) && !this.czyWystepujeLinia(tempOdjazd.getKurs().getLinia())){
+//							ElementStosu tempElt = new ElementStosu(tempOdjazd.getCzas(), tempPrzystanek, tempOdjazd.getKurs().getLinia(), tempOdjazd, tempOdjazd.czyDojezdzaDoCelu(), false);
+//							dfs(tempElt);
+//						}
+//					}
+//				}
+//			}
 		}
 		Odjazd aktOdjazd = akt.getOdjazd();
 		Odjazd nast = aktOdjazd.getKurs().getNext(aktOdjazd.getId());

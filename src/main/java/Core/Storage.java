@@ -9,7 +9,8 @@ public class Storage{
     public static boolean remember = false;
     public static String lastRouteFrom = "a";
     public static String lastRouteTo = "b";
-
+    public static String porzadek = "szybki";
+    public static String tryb = "w";
 
     public static void setPreferences() throws BackingStoreException {
         // Define a node in which the preferences can be stored
@@ -22,20 +23,23 @@ public class Storage{
             prefs.put("lastRouteFrom", lastRouteFrom);
             prefs.put("lastRouteTo", lastRouteTo);
         }
-        //set the values
-//	    prefs.put("theme", "application.css");
-//	    prefs.putBoolean("remember", false);
-//	    prefs.put("lastRouteFrom", "a");
-//	    prefs.put("lastRouteTo", "b");
+        prefs.put("porzadek", porzadek);
+        prefs.put("tryb", tryb);
 
-//	    String [] keys = prefs.keys();
-//	    System.out.println(keys);
         prefs.flush();
-        // Delete example
-//	    prefs.remove("theme");
+    }
 
+    public static void resetPreferences() throws BackingStoreException {
+	    String [] keys = prefs.keys();
+	    System.out.println(keys);
+        // Delete example
+	    prefs.remove("theme");
+	    prefs.remove("remember");
+	    prefs.remove("porzadek");
+	    prefs.remove("tryb");
 
     }
+
     public static void loadPreferences() {
         // Define a node in which the preferences can be stored
         prefs = Preferences.userRoot().node("storage");
@@ -47,11 +51,7 @@ public class Storage{
             lastRouteFrom = prefs.get("lastRouteFrom", "aa ");
             lastRouteTo = prefs.get("lastRouteTo", "bb ");
         }
-
-//	    System.out.println(theme);
-//	    System.out.println(remember);
-//	    System.out.println(lastRouteTo);
-//	    System.out.println(lastRouteFrom);
-
+        porzadek = prefs.get("porzadek", "szybki");
+        tryb = prefs.get("tryb", "w");
     }
 }

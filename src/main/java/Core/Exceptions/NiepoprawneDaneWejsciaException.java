@@ -1,4 +1,4 @@
-package Core.Expections;
+package Core.Exceptions;
 
 import java.io.IOException;
 
