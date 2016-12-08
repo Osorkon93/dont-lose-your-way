@@ -27,7 +27,11 @@ public class Main extends Application {
         primaryStage.show();
 
         MpkConnector mpk = new MpkConnector();
-//        mpk.downloadDatabase(mpk.getDatabaseUrl(), System.getProperty("user.home") + "\\app\\database.sqlite");
+        try{
+            mpk.downloadDatabase(mpk.getDatabaseUrl(), System.getProperty("user.home") + "\\app\\database.sqlite");
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

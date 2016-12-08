@@ -5,6 +5,11 @@ import java.util.List;
 
 
 public class Trasa {
+	/*
+	zbiór wszystkich przystanków danej linii np. 152.
+	niezależny od czasu
+	niezależny od inputu
+	 */
 	
 	private List<Przystanek> przystanki;
 	private int idDocelowy = -1;

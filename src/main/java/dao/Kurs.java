@@ -4,8 +4,11 @@ import java.util.List;
 
 
 public class Kurs {
+	/*
+	zbiór
+	 */
 	
-	private Linia linia;
+	private Linia linia;//delete
 	private Trasa trasa;
 	private List<Odjazd> odjazdy;
 	
@@ -26,7 +29,7 @@ public class Kurs {
 		odjazdy = tempOdjazdy;
 	}
 	
-	public Odjazd getNext(int id) {
+	public Odjazd getNext(int id) { //
 		if (id+1<odjazdy.size())return odjazdy.get(id+1);
 		else return null;
 	}

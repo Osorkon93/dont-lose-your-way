@@ -6,7 +6,6 @@ import Core.comparators.CzasComparator;
 import Core.comparators.WygodaComparator;
 import dao.*;
 
-import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.regex.PatternSyntaxException;
 
@@ -70,18 +69,18 @@ public class Wyszukiwarka implements WyszukiwarkaPolaczen {
 			if(index < daneWejscia.length)throw new ZbedneDaneNaKoncuException(index, daneWejscia);
 
 			//
-            Storage.loadPreferences(); //na wszelki wypadek
-            String porzadek = Storage.porzadek;
+//            Storage.loadPreferences(); //na wszelki wypadek
+            String wiele = Storage.wiele;
             String tryb = Storage.tryb;
             //
 
-			if(porzadek.equals("szybki")){
-				if(tryb.equals("w"))wynik = w.znajdzOdNajkrotszego(przystanekPoczatkowy, przystanekDocelowy, czasPoczatkowy, dlugosc);
-				else wynik = w.znajdzNajkrotsze(przystanekPoczatkowy, przystanekDocelowy, czasPoczatkowy, dlugosc);
+			if(tryb.equals("szybki")){
+				if(wiele.equals("wiele"))wynik = w.znajdzListeNajszybszych(przystanekPoczatkowy, przystanekDocelowy, czasPoczatkowy, dlugosc);
+				else wynik = w.znajdzNajszybszy(przystanekPoczatkowy, przystanekDocelowy, czasPoczatkowy, dlugosc);
 			}
 			else{
-				if(tryb.equals("w"))wynik = w.znajdzOdNajwygodniejszego(przystanekPoczatkowy, przystanekDocelowy, czasPoczatkowy, dlugosc);
-				else wynik = w.znajdzNajwygodniejsze(przystanekPoczatkowy, przystanekDocelowy, czasPoczatkowy, dlugosc);
+				if(wiele.equals("wiele"))wynik = w.znajdzListeNajwygodniejszych(przystanekPoczatkowy, przystanekDocelowy, czasPoczatkowy, dlugosc);
+				else wynik = w.znajdzNajwygodniejszy(przystanekPoczatkowy, przystanekDocelowy, czasPoczatkowy, dlugosc);
 			}
 			System.out.print(wynik);
 		}catch(ZbedneDaneNaKoncuException w){
@@ -159,7 +158,7 @@ public class Wyszukiwarka implements WyszukiwarkaPolaczen {
 
 	}
 
-	public String znajdzOdNajkrotszego(String start, String stop, String czasStartu, String dlugosc) throws GodzinaFormatException{
+	public String znajdzListeNajszybszych(String start, String stop, String czasStartu, String dlugosc) throws GodzinaFormatException{
 		znajdz(start, stop, czasStartu, dlugosc);
 		CzasComparator comparator = new CzasComparator();
 		polaczenia = new TreeSet<Polaczenie>(comparator);
@@ -167,7 +166,15 @@ public class Wyszukiwarka implements WyszukiwarkaPolaczen {
 		return wynik();
 	}
 
-	public String znajdzOdNajwygodniejszego(String start, String stop, String czasStartu, String dlugosc) throws GodzinaFormatException{
+	public String znajdzNajszybszy(String start, String stop, String czasStartu, String dlugosc) throws GodzinaFormatException{
+		znajdz(start, stop, czasStartu, dlugosc);
+		CzasComparator comparator = new CzasComparator();
+		polaczenia = new TreeSet<Polaczenie>(comparator);
+		zbierzDane();
+		return wynikPojedynczy();
+	}
+
+	public String znajdzListeNajwygodniejszych(String start, String stop, String czasStartu, String dlugosc) throws GodzinaFormatException{
 		znajdz(start, stop, czasStartu, dlugosc);
 		WygodaComparator comparator = new WygodaComparator();
 		polaczenia = new TreeSet<Polaczenie>(comparator);
@@ -175,21 +182,8 @@ public class Wyszukiwarka implements WyszukiwarkaPolaczen {
 		return wynik();
 	}
 
-	@Override
-	public void wczytajDane(String fileName) throws Exception {
-
-	}
-
-	public String znajdzNajkrotsze(String start, String cel, String czasStart, String dlugosc) throws GodzinaFormatException{
-		znajdz(start, cel, czasStart, dlugosc);
-		CzasComparator comparator = new CzasComparator();
-		polaczenia = new TreeSet<Polaczenie>(comparator);
-		zbierzDane();
-		return wynikPojedynczy();
-	}
-
-	public String znajdzNajwygodniejsze(String start, String cel, String czasStart, String dlugosc) throws GodzinaFormatException{
-		znajdz(start, cel, czasStart, dlugosc);
+	public String znajdzNajwygodniejszy(String start, String stop, String czasStartu, String dlugosc) throws GodzinaFormatException{
+		znajdz(start, stop, czasStartu, dlugosc);
 		WygodaComparator comparator = new WygodaComparator();
 		polaczenia = new TreeSet<Polaczenie>(comparator);
 		zbierzDane();
