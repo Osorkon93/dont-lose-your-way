@@ -11,17 +11,11 @@ import java.util.regex.PatternSyntaxException;
 
 public class Wyszukiwarka implements WyszukiwarkaPolaczen {
 
-	private List<Kurs> kursy;
-	private List<Trasa> trasy;
-	private Map<String, Linia> linie;
 	private Map<String, Przystanek> przystanki;
 	private Set<Polaczenie> polaczenia;
-	private List<Stack<ElementStosu>> listaStosow;
+	private Dfs dfs;
 
 	public Wyszukiwarka(){
-		kursy = new LinkedList<Kurs>();
-		trasy = new LinkedList<Trasa>();
-		linie = new HashMap<String, Linia>();
 		przystanki = new HashMap<String, Przystanek>();
 	}
 
@@ -194,21 +188,12 @@ public class Wyszukiwarka implements WyszukiwarkaPolaczen {
 		return przystanki.containsKey(przystanek);
 	}
 
-	private void ustawTrasy(Przystanek przystanek) {
-		Iterator<Trasa> it = trasy.iterator();
-		while(it.hasNext()){
-			it.next().ustawIdDocelowy(przystanek);
-		}
-	}
-
 	private void znajdz(String start, String cel, String czasStart, String dlugosc) throws GodzinaFormatException{
-		this.ustawTrasy(przystanki.get(cel));
-		Dfs dfs = new Dfs(przystanki.get(start), przystanki.get(cel), czasStart, dlugosc);
-		listaStosow = dfs.getWynik();
+		this.dfs = new Dfs(przystanki.get(start), przystanki.get(cel), czasStart, dlugosc);
 	}
 
 	private void zbierzDane(){
-		Iterator<Stack<ElementStosu>> itS = listaStosow.iterator();
+		Iterator<Stack<ElementStosu>> itS = dfs.getWynik().iterator();
 		while(itS.hasNext()){
 			String tempOpis = new String("");
 			Stack<ElementStosu> pomStos = itS.next();
@@ -230,7 +215,7 @@ public class Wyszukiwarka implements WyszukiwarkaPolaczen {
 					}
 				}
 				if(!jedziemy){
-					tempOpis+="["+pomElt.getLinia().getNazwa()+"] "+pomElt.getCzas().getString()+" "+pomElt.getPrzystanek().getNazwa()+" => ";
+					tempOpis+="["+pomElt.getLinia()+"] "+pomElt.getCzas().getString()+" "+pomElt.getPrzystanek().getNazwa()+" => ";
 					jedziemy = true;
 					ileKursow++;
 				}

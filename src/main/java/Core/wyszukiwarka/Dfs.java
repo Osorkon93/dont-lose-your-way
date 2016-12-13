@@ -1,10 +1,6 @@
 package Core.wyszukiwarka;
-
-import Core.Exceptions.GodzinaFormatException;
-import dao.Godzina;
-import dao.Linia;
-import dao.Odjazd;
-import dao.Przystanek;
+import Core.Exceptions.*;
+import dao.*;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -21,7 +17,7 @@ public class Dfs {
 	private Przystanek przystanekStartowy;
 	private Godzina poczatekCzasu;
 	
-	public Dfs(Przystanek przystanekStartowy, Przystanek przystanekDocelowy, String czasStart, String dlugosc) throws GodzinaFormatException {
+	public Dfs(Przystanek przystanekStartowy, Przystanek przystanekDocelowy, String czasStart, String dlugosc) throws GodzinaFormatException{
 		historia = new Stack<ElementStosu>();
 		wynik = new LinkedList<Stack<ElementStosu>>();
 		this.przystanekStartowy = przystanekStartowy;
@@ -39,7 +35,7 @@ public class Dfs {
 			while(it.hasNext()){
 				Odjazd pomOdjazd = it.next();
 				if(pomOdjazd.getCzas().czyNieMniejszy(poczatekCzasu)){
-					dfs(new ElementStosu(pomOdjazd.getCzas(), przystanekStartowy, pomOdjazd.getKurs().getLinia(), pomOdjazd, pomOdjazd.czyDojezdzaDoCelu(), false));
+					dfs(new ElementStosu(pomOdjazd.getCzas(), pomOdjazd.getKurs().getLinia(), pomOdjazd, false));
 				}
 			}
 		}
@@ -60,39 +56,41 @@ public class Dfs {
 			historia.pop();
 			return;
 		}
-		if(akt.czyWysiadam() && !akt.czyDocelowy()){
+		if(akt.czyWysiadam() && !(akt.getPrzystanek()==przystanekDocelowy)){
 			List<Odjazd> x = akt.getPrzystanek().getOdjazdy();
 			Iterator<Odjazd> it1 = x.iterator();
 			while(it1.hasNext()){
 				Odjazd tempOdjazd = it1.next();
 				if(tempOdjazd.getCzas().czyNieMniejszy1(akt.getCzas()) && !this.czyWystepujeLinia(tempOdjazd.getKurs().getLinia())){
-					ElementStosu tempElt = new ElementStosu(tempOdjazd.getCzas(), akt.getPrzystanek(), tempOdjazd.getKurs().getLinia(), tempOdjazd, tempOdjazd.czyDojezdzaDoCelu(), false);
+					ElementStosu tempElt = new ElementStosu(tempOdjazd.getCzas(), tempOdjazd.getKurs().getLinia(), tempOdjazd, false);
 					dfs(tempElt);
 				}
 			}
-//			List<Przystanek> tempPrzystanki = akt.getPrzystanek().getZespol().getPrzystanki();
-//			Iterator<Przystanek> it2 = tempPrzystanki.iterator();
-//			while(it2.hasNext()){
-//				Przystanek tempPrzystanek = it2.next();
-//				if(!this.czyWystepujePrzystanek(tempPrzystanek)){
-//					List<Odjazd> y = tempPrzystanek.getOdjazdy();
-//					Iterator<Odjazd> it3 = y.iterator();
-//					while(it3.hasNext()){
-//						Odjazd tempOdjazd = it3.next();
-//						if(tempOdjazd.getCzas().czyNieMniejszy5(akt.getCzas()) && !this.czyWystepujeLinia(tempOdjazd.getKurs().getLinia())){
-//							ElementStosu tempElt = new ElementStosu(tempOdjazd.getCzas(), tempPrzystanek, tempOdjazd.getKurs().getLinia(), tempOdjazd, tempOdjazd.czyDojezdzaDoCelu(), false);
-//							dfs(tempElt);
-//						}
-//					}
-//				}
-//			}
+			/*
+			List<Przystanek> tempPrzystanki = akt.getPrzystanek().getZespol().getPrzystanki();
+			Iterator<Przystanek> it2 = tempPrzystanki.iterator();
+			while(it2.hasNext()){
+				Przystanek tempPrzystanek = it2.next();
+				if(!this.czyWystepujePrzystanek(tempPrzystanek)){
+					List<Odjazd> y = tempPrzystanek.getOdjazdy();
+					Iterator<Odjazd> it3 = y.iterator();
+					while(it3.hasNext()){
+						Odjazd tempOdjazd = it3.next();
+						if(tempOdjazd.getCzas().czyNieMniejszy5(akt.getCzas()) && !this.czyWystepujeLinia(tempOdjazd.getKurs().getLinia())){
+							ElementStosu tempElt = new ElementStosu(tempOdjazd.getCzas(), tempPrzystanek, tempOdjazd.getKurs().getLinia(), tempOdjazd, tempOdjazd.czyDojezdzaDoCelu(), false);
+							dfs(tempElt);
+						}
+					}
+				}
+			}
+			*/
 		}
 		Odjazd aktOdjazd = akt.getOdjazd();
 		Odjazd nast = aktOdjazd.getKurs().getNext(aktOdjazd.getId());
 		ElementStosu nastElt;
 		if(nast != null){
 			if(!this.czyWystepujePrzystanek(nast.getPrzystanek())){
-				nastElt = new ElementStosu(nast.getCzas(), nast.getPrzystanek(), nast.getKurs().getLinia(), nast, nast.czyDojezdzaDoCelu(), true);
+				nastElt = new ElementStosu(nast.getCzas(), nast.getKurs().getLinia(), nast, true);
 				dfs(nastElt);
 			}
 		}
@@ -109,7 +107,7 @@ public class Dfs {
 		return wystepuje;
 	}
 	
-	private boolean czyWystepujeLinia(Linia linia) {
+	private boolean czyWystepujeLinia(String linia) {
 		boolean wystepuje = false;
 		Iterator<ElementStosu> it = historia.iterator();
 		while(it.hasNext()){

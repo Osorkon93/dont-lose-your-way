@@ -1,25 +1,17 @@
 package Core.wyszukiwarka;
-
-import dao.Godzina;
-import dao.Linia;
-import dao.Odjazd;
-import dao.Przystanek;
+import dao.*;
 
 public class ElementStosu {
 	
 	private Godzina czas;
-	private Przystanek przystanek;
-	private Linia linia;
+	private String linia;
 	private Odjazd odjazd;
-	private boolean destination;
 	private boolean czyWysiadam;
 	
-	public ElementStosu(Godzina czas, Przystanek przystanek, Linia linia, Odjazd odjazd, boolean czyDojezdza, boolean b) {
+	public ElementStosu(Godzina czas, String linia, Odjazd odjazd, boolean b) {
 		this.czas = czas;
-		this.przystanek = przystanek;
 		this.linia = linia;
 		this.odjazd = odjazd;
-		this.destination = czyDojezdza;
 		this.czyWysiadam = b;
 	}
 	
@@ -28,19 +20,15 @@ public class ElementStosu {
 	}
 	
 	public Przystanek getPrzystanek(){
-		return this.przystanek;
+		return this.odjazd.getPrzystanek();
 	}
 	
-	public Linia getLinia(){
+	public String getLinia(){
 		return this.linia;
 	}
 	
 	public Odjazd getOdjazd(){
 		return this.odjazd;
-	}
-	
-	public boolean czyDocelowy(){
-		return destination;
 	}
 	
 	public boolean czyWysiadam(){
