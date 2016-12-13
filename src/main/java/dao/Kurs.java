@@ -5,14 +5,15 @@ import java.util.List;
 
 public class Kurs {
 	/*
-	zbiór
+	konkretny przejazd danej linii komunikacyjnej po danej trasie (związany z fizycznym środkiem komunikacji o określonym identyfikatorze)
+	ponadto n-ty element listy odjazdy to odjazd z n-tego przystanku Trasy
 	 */
 	
-	private Linia linia;//delete
+	private String linia;
 	private Trasa trasa;
 	private List<Odjazd> odjazdy;
 	
-	public Kurs(Linia tempLinia, Trasa trasa) {
+	public Kurs(String tempLinia, Trasa trasa) {
 		this.linia = tempLinia;
 		this.trasa = trasa;
 	}
@@ -21,7 +22,7 @@ public class Kurs {
 		return this.trasa;
 	}
 	
-	public Linia getLinia() {
+	public String getLinia() {
 		return linia;
 	}
 	
@@ -29,7 +30,7 @@ public class Kurs {
 		odjazdy = tempOdjazdy;
 	}
 	
-	public Odjazd getNext(int id) { //
+	public Odjazd getNext(int id) {
 		if (id+1<odjazdy.size())return odjazdy.get(id+1);
 		else return null;
 	}

@@ -1,6 +1,9 @@
 package dao;
 
 public class Odjazd {
+	/*
+	konkretny odjazd danego kursu linii komunikacyjnej z j-tego przystanku trasy(liczymy od zera) o danej godzinie
+	 */
 	
 	private Kurs kurs;
 	private int id;
@@ -12,9 +15,6 @@ public class Odjazd {
 		this.godzina = tempGodzina;
 	}
 
-	public boolean czyDojezdzaDoCelu(){
-		return (id < kurs.getTrasa().getIdDocelowe());
-	}
 	public Godzina getCzas(){
 		return this.godzina;
 	}
