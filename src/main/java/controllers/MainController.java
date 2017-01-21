@@ -1,8 +1,14 @@
 package controllers;
 
-import Core.wyszukiwarka.Wyszukiwarka;
-import Core.Storage;
+//import Core.wyszukiwarka.Wyszukiwarka;
 
+import Core.Storage;
+import Core.wyszukiwarka.Search;
+import DAO.Connection.Connection;
+import DAO.Line.LineDao;
+import DAO.Line.LineDaoImpl;
+import DAO.Stop.StopDao;
+import DAO.Stop.StopDaoImpl;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,42 +19,44 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import services.MpkConnector;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.ResourceBundle;
 import java.util.prefs.BackingStoreException;
 
 
 public class MainController implements Initializable{
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-    }
+    private MpkConnector mpk;
+    private StopDao stopDao;
+    private LineDao lineDao;
 
     @FXML Button go;
     @FXML TextField fromField, toField;
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        updateDatabase(new ActionEvent());
+    }
 
     @FXML
     public void pressedGo(ActionEvent e) {
 
-        String from = fromField.getText();
-        String to = toField.getText();
-//        if ((from != null && !from.isEmpty()) && (to != null && !to.isEmpty())) {
-//            System.out.println(from + " | " + to);
-//        }
+        if(stopDao.getStop(fromField.getText()) == null || stopDao.getStop(toField.getText()) == null) {
+            return;
+        }
+        Connection output = (new Search(lineDao, stopDao)).searchConnection(fromField.getText(), toField.getText(), 2);
+        if(output.getNumberOfLineChanges()==1) {
+            System.out.println(output.getDescription() + " From: " + output.getConnectionParts().get(0).getStopsList().get(0).getName() +
+                    ", by: " + output.getConnectionParts().get(1).getStopsList().get(0).getName() +
+                    ", to " + output.getConnectionParts().get(1).getStopsList().get(output.getConnectionParts().get(1).getStopsList().size() - 1).getName() +
+                    ". Lines: " + output.getConnectionParts().get(0).getLine().getName() + "-" + output.getConnectionParts().get(0).getLine().getLastStop().getName() +
+                    " -- " + output.getConnectionParts().get(1).getLine().getName() + "-" + output.getConnectionParts().get(1).getLine().getLastStop().getName()
+            );
+        }
 
-        //TODO: parse input
-
-        // domyślnie na teraz, ale użytkownik może zmienić
-        String timeStamp = new SimpleDateFormat("HH:mm").format(Calendar.getInstance().getTime());
-        Wyszukiwarka.main(new String[]{from, to, timeStamp, "15"});
-        //TODO: zmienić czas z HH:mm na yyyyMMdd_HH:mm
-        //jakby ktoś chciał jutro lub za tydzień
     }
 
     @FXML
@@ -59,7 +67,19 @@ public class MainController implements Initializable{
 
     @FXML
     public void updateDatabase(ActionEvent e){
-        //?
+        mpk = new MpkConnector();
+        try{
+            mpk.downloadDatabase(mpk.getDatabaseUrl(), System.getProperty("user.home")+System.getProperty("file.separator", "\\")+".appDontLose"+System.getProperty("file.separator", "\\")+"database.sqlite");
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
+        System.out.println("DB ADRESS: " + System.getProperty("user.home")+System.getProperty("file.separator", "\\")+".appDontLose"+System.getProperty("file.separator", "\\")+"database.sqlite");
+        stopDao = new StopDaoImpl(System.getProperty("user.home")+System.getProperty("file.separator", "\\")+".appDontLose"+System.getProperty("file.separator", "\\")+"database.sqlite");
+        lineDao = new LineDaoImpl(
+                System.getProperty("user.home")+System.getProperty("file.separator", "\\")+".appDontLose"+System.getProperty("file.separator", "\\")+"database.sqlite",
+                stopDao
+        );
+        lineDao.initialize();
     }
 
     @FXML

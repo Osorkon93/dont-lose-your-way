@@ -3,11 +3,15 @@ package services;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Paths;
 
 
 public class MpkConnector {
@@ -32,11 +36,13 @@ public class MpkConnector {
         return (String)jsonObject.get("d");
     }
 
-    public boolean downloadDatabase(String url, String path) {
+    public boolean downloadDatabase(String url, String destinationPath) {
         try {
+            if(!Paths.get(destinationPath).toFile().exists())
+                if (!Paths.get(destinationPath).toFile().getParentFile().mkdirs()) System.out.println("Can't create directory #MpkConnetor#downloadDatabase(): " + destinationPath);
             URL website = new URL(url);
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-            FileOutputStream fos = new FileOutputStream(path);
+            FileOutputStream fos = new FileOutputStream(destinationPath);
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
             return true;
         } catch (Exception e) {
