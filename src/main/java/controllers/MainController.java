@@ -23,6 +23,7 @@ import services.MpkConnector;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.BackingStoreException;
 
@@ -45,16 +46,28 @@ public class MainController implements Initializable{
     public void pressedGo(ActionEvent e) {
 
         if(stopDao.getStop(fromField.getText()) == null || stopDao.getStop(toField.getText()) == null) {
+            System.out.println("We Cant find such stops");
+            //todo jakis label
             return;
         }
-        Connection output = (new Search(lineDao, stopDao)).searchConnection(fromField.getText(), toField.getText(), 2);
-        if(output.getNumberOfLineChanges()==1) {
-            System.out.println(output.getDescription() + " From: " + output.getConnectionParts().get(0).getStopsList().get(0).getName() +
-                    ", by: " + output.getConnectionParts().get(1).getStopsList().get(0).getName() +
-                    ", to " + output.getConnectionParts().get(1).getStopsList().get(output.getConnectionParts().get(1).getStopsList().size() - 1).getName() +
-                    ". Lines: " + output.getConnectionParts().get(0).getLine().getName() + "-" + output.getConnectionParts().get(0).getLine().getLastStop().getName() +
-                    " -- " + output.getConnectionParts().get(1).getLine().getName() + "-" + output.getConnectionParts().get(1).getLine().getLastStop().getName()
-            );
+        List<Connection> outputList = (new Search(lineDao, stopDao)).searchConnection(fromField.getText(), toField.getText(), 2, 3);
+        for(Connection output : outputList) {
+            if(output == null){
+                System.out.println("Brak polaczenia :(");
+            }else
+            if (output.getNumberOfLineChanges() == 0) {
+                System.out.println(output.getDescription() + " From: " + output.getConnectionParts().get(0).getStopsList().get(0).getName() +
+                " to " + output.getConnectionParts().get(0).getStopsList().get(output.getConnectionParts().get(0).getStopsList().size()-1).getName() +
+                ". Line: " + output.getConnectionParts().get(0).getLine().getName());
+            }else
+            if (output.getNumberOfLineChanges() == 1) {
+                System.out.println(output.getDescription() + " From: " + output.getConnectionParts().get(0).getStopsList().get(0).getName() +
+                        ", by: " + output.getConnectionParts().get(1).getStopsList().get(0).getName() +
+                        ", to " + output.getConnectionParts().get(1).getStopsList().get(output.getConnectionParts().get(1).getStopsList().size() - 1).getName() +
+                        ". Lines: " + output.getConnectionParts().get(0).getLine().getName() + "-" + output.getConnectionParts().get(0).getLine().getLastStop().getName() +
+                        " -- " + output.getConnectionParts().get(1).getLine().getName() + "-" + output.getConnectionParts().get(1).getLine().getLastStop().getName()
+                );
+            }
         }
 
     }
