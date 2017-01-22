@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="00763031-7a1d-48a6-9f2f-a10b1fd04668" name="Default" comment="P-001">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/controllers/GmapsfxController.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/view/Gmapfx.fxml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/Core/wyszukiwarka/Search.java" afterPath="$PROJECT_DIR$/src/main/java/Core/wyszukiwarka/Search.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/controllers/MainController.java" afterPath="$PROJECT_DIR$/src/main/java/controllers/MainController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/view/Main.fxml" afterPath="$PROJECT_DIR$/src/main/resources/view/Main.fxml" />
-    </list>
+    <list default="true" id="00763031-7a1d-48a6-9f2f-a10b1fd04668" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -1067,7 +1060,7 @@
       <workItem from="1484910103731" duration="8140000" />
       <workItem from="1484984623787" duration="10004000" />
       <workItem from="1485016594470" duration="593000" />
-      <workItem from="1485106476403" duration="8195000" />
+      <workItem from="1485106476403" duration="8247000" />
     </task>
     <task id="LOCAL-00001" summary="P-001">
       <created>1485006348937</created>
@@ -1076,11 +1069,18 @@
       <option name="project" value="LOCAL" />
       <updated>1485006348937</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="P-002">
+      <created>1485116098915</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1485116098915</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="63510000" />
+    <option name="totallyTimeSpent" value="63562000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -1151,7 +1151,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="P-001" />
-    <option name="LAST_COMMIT_MESSAGE" value="P-001" />
+    <MESSAGE value="P-002" />
+    <option name="LAST_COMMIT_MESSAGE" value="P-002" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
