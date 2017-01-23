@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="00763031-7a1d-48a6-9f2f-a10b1fd04668" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/Core/wyszukiwarka/Dfs.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/Core/wyszukiwarka/ElementStosu.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/Core/wyszukiwarka/Wyszukiwarka.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="00763031-7a1d-48a6-9f2f-a10b1fd04668" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -552,6 +547,8 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$/GIT/dont-lose-your-way" />
     <property name="js.eslint.eslintPackage" value="" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -1062,7 +1059,7 @@
       <workItem from="1484984623787" duration="10004000" />
       <workItem from="1485016594470" duration="593000" />
       <workItem from="1485106476403" duration="8653000" />
-      <workItem from="1485189408198" duration="84000" />
+      <workItem from="1485189408198" duration="113000" />
     </task>
     <task id="LOCAL-00001" summary="P-001">
       <created>1485006348937</created>
@@ -1092,11 +1089,18 @@
       <option name="project" value="LOCAL" />
       <updated>1485116154045</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="P-002">
+      <created>1485189512273</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1485189512273</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="64052000" />
+    <option name="totallyTimeSpent" value="64081000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
