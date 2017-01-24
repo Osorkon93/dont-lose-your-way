@@ -34,6 +34,10 @@ public class Line {
         return lastStop;
     }
 
+    public void setLastStop(Stop lastStop){
+        this.lastStop = lastStop;
+    }
+
     public List<Stop> getStops() {
         return stops;
     }

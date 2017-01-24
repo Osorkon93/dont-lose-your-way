@@ -98,7 +98,7 @@ public class Search {
                         }
 
                     if(flag) {
-                        System.out.println("ZNALEZIONO POŁĄCZENIE: " + lineName + ", w strone: " + line.lastStop.getName());
+                        System.out.println("ZNALEZIONO POŁĄCZENIE: " + lineName + ", w strone: " + line.getLastStop().getName());
                         return (new ConnectionPart(line, line.getStops().subList(starting, stopping + 1)));
                     }
                 }

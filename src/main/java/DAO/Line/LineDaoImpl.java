@@ -51,7 +51,7 @@ public class LineDaoImpl implements  LineDao{
                         stopDaoImpl.updateStop(tempStop.getId(), tempStop);
                         tempLine.addStop(tempStop);
                     }
-                    tempLine.lastStop = tempLine.getStops().get(tempLine.getStops().size()-1);
+                    tempLine.setLastStop(tempLine.getStops().get(tempLine.getStops().size()-1));
                     allLines.add(tempLine);
                 }
             }
