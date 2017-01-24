@@ -23,13 +23,17 @@ public class GmapsfxController implements Initializable, MapComponentInitialized
     @FXML
     private TextField addressTextField;
 
-    private GoogleMap map;
+    private static GoogleMap map;
     private StringProperty address = new SimpleStringProperty();
     //private GeocodingService geocodingService = new GeocodingService();
     private static GmapsfxController instance;
 
     public static GmapsfxController getInstance() {
         return instance;
+    }
+
+    public static GoogleMap getMap(){
+        return map;
     }
 
 
@@ -56,6 +60,7 @@ public class GmapsfxController implements Initializable, MapComponentInitialized
                 .zoom(12);
 
         map = mapView.createMap(mapOptions);
+
     }
 
 

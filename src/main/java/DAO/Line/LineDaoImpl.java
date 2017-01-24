@@ -41,7 +41,7 @@ public class LineDaoImpl implements  LineDao{
                     Line tempLine = new Line(resultSetLines.getInt("LineName"));
                     Statement statement2 = connection.createStatement();
                     ResultSet resultSetStops = statement2.executeQuery(
-                            "SELECT DISTINCT No, StopId, StopName, StreetName FROM StopDepartures WHERE LineName=" + tempLine.getName() +
+                            "SELECT DISTINCT VariantID, No, StopId, StopName, StreetName, PointID FROM StopDepartures WHERE LineName=" + tempLine.getName() +
                                     " and LastStopId =" + resultSetLastStops.getInt("LastStopId") + " ORDER BY No ASC"
                     );
 
@@ -49,6 +49,8 @@ public class LineDaoImpl implements  LineDao{
                         Stop tempStop = stopDaoImpl.getStop(resultSetStops.getInt("StopID"));
                         tempStop.addLine(tempLine.getName().toString());
                         stopDaoImpl.updateStop(tempStop.getId(), tempStop);
+                        tempStop.setVariantID(resultSetStops.getInt("VariantID"));
+                        tempStop.setPointID(resultSetStops.getInt("PointID"));
                         tempLine.addStop(tempStop);
                     }
                     tempLine.setLastStop(tempLine.getStops().get(tempLine.getStops().size()-1));

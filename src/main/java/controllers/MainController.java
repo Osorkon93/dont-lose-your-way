@@ -7,8 +7,13 @@ import Core.wyszukiwarka.Search;
 import DAO.Connection.Connection;
 import DAO.Line.LineDao;
 import DAO.Line.LineDaoImpl;
+import DAO.Stop.Stop;
 import DAO.Stop.StopDao;
 import DAO.Stop.StopDaoImpl;
+import com.lynden.gmapsfx.javascript.object.GoogleMap;
+import com.lynden.gmapsfx.javascript.object.LatLong;
+import com.lynden.gmapsfx.javascript.object.Marker;
+import com.lynden.gmapsfx.javascript.object.MarkerOptions;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,9 +21,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import services.MpkConnector;
 
@@ -35,6 +40,8 @@ public class MainController implements Initializable{
     private MpkConnector mpk;
     private StopDao stopDao;
     private LineDao lineDao;
+    private List<Connection> outputList;
+    private List<Marker> markers = new ArrayList<>();
 
     @FXML Button go;
     @FXML TextField fromField, toField;
@@ -42,9 +49,14 @@ public class MainController implements Initializable{
     @FXML TextArea stopOutput2;
     @FXML TextArea stopOutput3;
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        updateDatabase(new ActionEvent());
+        try {
+            updateDatabase(new ActionEvent());
+        } catch ( Exception e){
+            e.printStackTrace();
+        }
         stopOutput1.setWrapText(true);
         stopOutput2.setWrapText(true);
         stopOutput3.setWrapText(true);
@@ -62,7 +74,7 @@ public class MainController implements Initializable{
             //todo jakis label
             return;
         }
-        List<Connection> outputList = (new Search(lineDao, stopDao)).searchConnection(fromField.getText(), toField.getText(), 2, 3);
+        outputList = (new Search(lineDao, stopDao)).searchConnection(fromField.getText(), toField.getText(), 2, 3);
 
         List<String> outputStrings = new ArrayList<>();
         for(Connection output : outputList) {
@@ -75,6 +87,11 @@ public class MainController implements Initializable{
                 ".\nLine: " + output.getConnectionParts().get(0).getLine().getName() + "-" + output.getConnectionParts().get(0).getLine().getLastStop().getName());
                 System.out.println(string);
                 outputStrings.add(string);
+//                try {
+//                    mpk.getStopDeparturesTimes(output.getConnectionParts().get(0).getStopsList().get(0), output.getConnectionParts().get(0).getLine());
+//                } catch (Exception e1){
+//                    e1.printStackTrace();
+//                }
             }else
             if (output.getNumberOfLineChanges() == 1) {
                 String string = (output.getDescription() + "\n\nFrom: " + output.getConnectionParts().get(0).getStopsList().get(0).getName() +
@@ -88,10 +105,64 @@ public class MainController implements Initializable{
             }
         }
 
+
+        if(outputStrings.size()==0) stopOutput1.setText("We couldn't find any connection.");
         if(outputStrings.size()>0) stopOutput1.setText(outputStrings.get(0));
         if(outputStrings.size()>1) stopOutput2.setText(outputStrings.get(1));
         if(outputStrings.size()>2) stopOutput3.setText(outputStrings.get(2));
 
+    }
+
+
+    public void markOnMap(MouseEvent e){
+        try {
+            TitledPane pane = (TitledPane) e.getSource();
+
+            Integer i=-1;
+            if(pane.getId().equals("result1")) i=0;
+            if(pane.getId().equals("result2")) i=1;
+            if(pane.getId().equals("result3")) i=2;
+            if(i == -1 || outputList==null || outputList.size()==0) return;
+
+            GoogleMap googleMap = GmapsfxController.getMap();
+            for(Marker marker : markers){
+                System.out.println("Removing marker");
+                googleMap.removeMarker(marker);
+            }
+
+            markers = new ArrayList<>();
+            if(outputList.get(i).getConnectionParts().size() >= 1){
+                Stop stop = outputList.get(i).getConnectionParts().get(0).getStopsList().get(0);
+                List<Double> temp = mpk.getStopLatLng(stop);
+                LatLong latLong = new LatLong(temp.get(1), temp.get(0));
+                Marker marker = new Marker(new MarkerOptions().position(latLong));
+                googleMap.addMarker(marker);
+                markers.add(marker);
+
+                stop = outputList.get(i).getConnectionParts().get(0).getStopsList().get(
+                        outputList.get(i).getConnectionParts().get(0).getStopsList().size()-1
+                );
+                temp = mpk.getStopLatLng(stop);
+                latLong = new LatLong(temp.get(1), temp.get(0));
+                marker = new Marker(new MarkerOptions().position(latLong));
+                googleMap.addMarker(marker);
+                markers.add(marker);
+            }
+            if(outputList.get(i).getConnectionParts().size() == 2){
+                Stop stop = outputList.get(i).getConnectionParts().get(1).getStopsList().get(
+                        outputList.get(i).getConnectionParts().get(1).getStopsList().size()-1
+                );
+                List<Double> temp = mpk.getStopLatLng(stop);
+                LatLong latLong = new LatLong(temp.get(1), temp.get(0));
+                Marker marker = new Marker(new MarkerOptions().position(latLong));
+                googleMap.addMarker(marker);
+                markers.add(marker);
+            }
+            googleMap.setZoom(googleMap.getZoom()-1);
+            googleMap.setZoom(googleMap.getZoom()+1);
+        } catch (Exception e1){
+            e1.printStackTrace();
+        }
     }
 
     @FXML
@@ -161,5 +232,25 @@ public class MainController implements Initializable{
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public void reportBug(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Bug report dialog");
+        alert.setHeaderText("Please describe bug below and click ok");
+
+        TextArea textArea = new TextArea();
+        textArea.setEditable(true);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(textArea, 0, 0);
+
+        alert.getDialogPane().setContent(expContent);
+        alert.showAndWait();
     }
 }

@@ -9,6 +9,8 @@ public class Stop implements Comparable{
     private String name;
     private List<String> linesNames;
     private String street;
+    private Integer variantID;
+    private Integer pointID;
 
     public Stop(Integer id, String name, List<String> linesNames, String street){
         this.id=id;
@@ -20,6 +22,22 @@ public class Stop implements Comparable{
     public void addLine(String lineName){
         if(!linesNames.contains(lineName))
             linesNames.add(lineName);
+    }
+
+    public Integer getPointID(){
+        return pointID;
+    }
+
+    public void setPointID(Integer pointID){
+        this.pointID=pointID;
+    }
+
+    public Integer getVariantID(){
+        return variantID;
+    }
+
+    public void setVariantID(Integer variantID){
+        this.variantID = variantID;
     }
 
     public Integer getId() {
