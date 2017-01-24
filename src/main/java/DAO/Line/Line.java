@@ -13,12 +13,21 @@ public class Line {
 
     private Integer name;
     private List<Stop> stops;
-    public Stop lastStop;
+    private Stop lastStop;
+    private Integer comfortLevel=0;
 
 
     public Line(Integer name){
         this.name = name;
         this.stops = new ArrayList<>();
+    }
+
+    public Integer getComfortLevel(){
+        return comfortLevel;
+    }
+
+    public void setComfortLevel(Integer comfortLevel){
+        this.comfortLevel=comfortLevel;
     }
 
     public Stop getLastStop(){

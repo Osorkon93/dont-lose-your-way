@@ -9,9 +9,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-//import com.lynden.gmapsfx.javascript.object.MapType;
-
-
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {

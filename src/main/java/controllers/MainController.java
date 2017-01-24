@@ -17,12 +17,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import services.MpkConnector;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.BackingStoreException;
@@ -36,14 +38,24 @@ public class MainController implements Initializable{
 
     @FXML Button go;
     @FXML TextField fromField, toField;
+    @FXML TextArea stopOutput1;
+    @FXML TextArea stopOutput2;
+    @FXML TextArea stopOutput3;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         updateDatabase(new ActionEvent());
+        stopOutput1.setWrapText(true);
+        stopOutput2.setWrapText(true);
+        stopOutput3.setWrapText(true);
     }
 
     @FXML
     public void pressedGo(ActionEvent e) {
+
+        stopOutput1.setText("");
+        stopOutput2.setText("");
+        stopOutput3.setText("");
 
         if(stopDao.getStop(fromField.getText()) == null || stopDao.getStop(toField.getText()) == null) {
             System.out.println("We Cant find such stops");
@@ -51,24 +63,34 @@ public class MainController implements Initializable{
             return;
         }
         List<Connection> outputList = (new Search(lineDao, stopDao)).searchConnection(fromField.getText(), toField.getText(), 2, 3);
+
+        List<String> outputStrings = new ArrayList<>();
         for(Connection output : outputList) {
             if(output == null){
                 System.out.println("Brak polaczenia :(");
             }else
             if (output.getNumberOfLineChanges() == 0) {
-                System.out.println(output.getDescription() + " From: " + output.getConnectionParts().get(0).getStopsList().get(0).getName() +
-                " to " + output.getConnectionParts().get(0).getStopsList().get(output.getConnectionParts().get(0).getStopsList().size()-1).getName() +
-                ". Line: " + output.getConnectionParts().get(0).getLine().getName());
+                String string = (output.getDescription() + "\n\nFrom: " + output.getConnectionParts().get(0).getStopsList().get(0).getName() +
+                "\nTo: " + output.getConnectionParts().get(0).getStopsList().get(output.getConnectionParts().get(0).getStopsList().size()-1).getName() +
+                ".\nLine: " + output.getConnectionParts().get(0).getLine().getName() + "-" + output.getConnectionParts().get(0).getLine().getLastStop().getName());
+                System.out.println(string);
+                outputStrings.add(string);
             }else
             if (output.getNumberOfLineChanges() == 1) {
-                System.out.println(output.getDescription() + " From: " + output.getConnectionParts().get(0).getStopsList().get(0).getName() +
-                        ", by: " + output.getConnectionParts().get(1).getStopsList().get(0).getName() +
-                        ", to " + output.getConnectionParts().get(1).getStopsList().get(output.getConnectionParts().get(1).getStopsList().size() - 1).getName() +
-                        ". Lines: " + output.getConnectionParts().get(0).getLine().getName() + "-" + output.getConnectionParts().get(0).getLine().getLastStop().getName() +
-                        " -- " + output.getConnectionParts().get(1).getLine().getName() + "-" + output.getConnectionParts().get(1).getLine().getLastStop().getName()
+                String string = (output.getDescription() + "\n\nFrom: " + output.getConnectionParts().get(0).getStopsList().get(0).getName() +
+                        "\nBy: " + output.getConnectionParts().get(1).getStopsList().get(0).getName() +
+                        "\nTo " + output.getConnectionParts().get(1).getStopsList().get(output.getConnectionParts().get(1).getStopsList().size() - 1).getName() +
+                        ".\nLines: \n" + output.getConnectionParts().get(0).getLine().getName() + "-" + output.getConnectionParts().get(0).getLine().getLastStop().getName() +
+                        "\n" + output.getConnectionParts().get(1).getLine().getName() + "-" + output.getConnectionParts().get(1).getLine().getLastStop().getName()
                 );
+                System.out.println(string);
+                outputStrings.add(string);
             }
         }
+
+        if(outputStrings.size()>0) stopOutput1.setText(outputStrings.get(0));
+        if(outputStrings.size()>1) stopOutput2.setText(outputStrings.get(1));
+        if(outputStrings.size()>2) stopOutput3.setText(outputStrings.get(2));
 
     }
 

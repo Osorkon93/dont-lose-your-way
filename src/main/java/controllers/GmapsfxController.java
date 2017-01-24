@@ -8,7 +8,6 @@ import com.lynden.gmapsfx.javascript.object.MapOptions;
 import com.lynden.gmapsfx.javascript.object.MapTypeIdEnum;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
@@ -26,10 +25,17 @@ public class GmapsfxController implements Initializable, MapComponentInitialized
 
     private GoogleMap map;
     private StringProperty address = new SimpleStringProperty();
+    //private GeocodingService geocodingService = new GeocodingService();
+    private static GmapsfxController instance;
+
+    public static GmapsfxController getInstance() {
+        return instance;
+    }
 
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        instance = this;
         mapView.addMapInializedListener(this);
         //address.bind(addressTextField.textProperty());
     }
@@ -41,21 +47,26 @@ public class GmapsfxController implements Initializable, MapComponentInitialized
 
         mapOptions.center(new LatLong(50.06100, 19.9350))
                 .mapType(MapTypeIdEnum.ROADMAP)
-                .overviewMapControl(false)
-                .panControl(false)
+                .overviewMapControl(true)
+                .panControl(true)
                 .rotateControl(false)
-                .scaleControl(false)
+                .scaleControl(true)
                 .streetViewControl(false)
-                .zoomControl(false)
+                .zoomControl(true)
                 .zoom(12);
 
         map = mapView.createMap(mapOptions);
-
     }
 
 
-    @FXML
-    public void addressTextFieldAction(ActionEvent event) {
-
-    }
+//    public void setStopOnMap(String Name){
+//        geocodingService.geocode(Name, new GeocodingServiceCallback() {
+//            @Override
+//            public void geocodedResultsReceived(GeocodingResult[] geocodingResults, GeocoderStatus geocoderStatus) {
+//                for(GeocodingResult geocodingResult : geocodingResults){
+//                    System.out.println(geocodingResult.toString());
+//                }
+//            }
+//        });
+//    }
 }
